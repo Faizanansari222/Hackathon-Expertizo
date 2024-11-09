@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
  
 
 const SignupForm = () => {
-  const [fullname, setFullname] = useState('');
+  const [fullName, setFullname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -18,7 +18,7 @@ const SignupForm = () => {
       alert('Passwords do not match!');
       return;
     }
-await register(email, password)
+await register(email, password, fullName)
 router.push('/login')
     // try {
     //   const response = await fetch('http://localhost:1337/api/auth/local/register', {
@@ -52,7 +52,7 @@ router.push('/login')
             <input
               type="text"
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#333333]"
-              value={fullname}
+              value={fullName}
               onChange={(e) => setFullname(e.target.value)}
               required
             />

@@ -2,14 +2,45 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import { login } from "../../config/firebase";
+import { useRouter } from "next/navigation";
+import { auth, googleProvider } from "../../config/firebaseConfig";
+import { collection, addDoc } from "firebase/firestore";
+import { signInWithPopup } from "firebase/auth";
+
+import { db } from "../../config/firebase";
 
 const SignupForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const router = useRouter();
+
+  const loginWithGoogle = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+  
+      const { user } = result;
+      
+      const docRef = await addDoc(collection(db, "userFromGoogle"), {
+        uid: user.uid,
+        displayName: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+      });
+  
+      console.log("Document written with ID: ", docRef.id);
+      
+      // Redirect user after successful login
+      router.push("/");
+    } catch (error: any) {
+      console.error("Error during Google login:", error.message);
+    }
+  };
+  
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    login(email, password);
+    await login(email, password);
+    router.push("/");
 
     // try {
     //   const response = await fetch(
@@ -60,7 +91,7 @@ const SignupForm = () => {
             </label>
             <input
               type="password"
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#333333]"
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#333333cc]"
               onChange={(e) => setPassword(e.target.value)}
               required
             />
@@ -73,7 +104,10 @@ const SignupForm = () => {
           </button>
         </form>
         <div className="flex justify-center items-center mt-6">
-          <button className="bg-[#fd4e4e] text-white px-4 py-2 rounded mr-2">
+          <button
+            onClick={loginWithGoogle}
+            className="bg-[#fd4e4e] text-white px-4 py-2 rounded mr-2"
+          >
             Sign in with Google
           </button>
           <button className="bg-[#3b5998] text-white px-4 py-2 rounded">

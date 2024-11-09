@@ -1,44 +1,86 @@
+"use client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { auth, onAuthStateChanged, signOut } from "@/config/firebaseConfig";
 
 function Navbar(props: any) {
-  const { title, iconOne, iconTwo } = props;
+  const { title, iconOne, iconTwo, profileImg, profileName } = props;
+  const [user, setUser] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser: any) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const logOutFun = () => {
+    signOut(auth)
+      .then(() => {
+        alert("Logout successful");
+      })
+      .catch((error: any) => {
+        alert(error.message);
+      });
+  };
+
   return (
-    <div className=" bg-[#333333]  px-7 text-[#939393]    p-2 ">
-      <div className=" flex items-center justify-between  ">
-        <div>
-          <h1>{title}</h1>
-        </div>
-        <div className="flex items-center justify-around gap-5">
-          <span className=" p-1 hover:shadow-lg  rounded-full">
-            <button>{iconOne}</button>
-          </span>
-          <span className=" p-1   hover:shadow-lg  rounded-full">
-            <Link href="/login">
-            <button>{iconTwo}</button>
-            </Link>
-          </span>
-          <span className="  p-1 flex items-center justify-center shadow-md bg-white  rounded-md">
-            <input className="text-[#333333] decoration-none outline-none" type="text" name="" />
-          </span>
+    <>
+      <div className="fixed z-0 top-0 left-0 w-full   bg-white px-7 text-[#b1b1b1]  p-2">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-medium">{title}</h1>
+          </div>
+          <div className="gap-52 w-[50%] flex">
+            <span className="p-1 flex w-full items-center gap-2 justify-center   border-2 bg-white rounded-md">
+              <svg
+                className="text-3xl "
+                xmlns="http://www.w3.org/2000/svg"
+                width="1em"
+                height="1em"
+                viewBox="0 0 24 24"
+              >
+                <g fill="none">
+                  <path
+                    fill="currentColor"
+                    fillOpacity="0.16"
+                    d="M11 19a8 8 0 1 0 0-16a8 8 0 0 0 0 16"
+                  />
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeMiterlimit="10"
+                    strokeWidth="1.5"
+                    d="m21 21l-4-4m2-6a8 8 0 1 1-16 0a8 8 0 0 1 16 0"
+                  />
+                </g>
+              </svg>
+              <input
+                className="text-[#8d8d8d] w-[100%] outline-none"
+                type="text"
+                placeholder="Search..."
+              />
+            </span>
+            <div className=""></div>
+          </div>
+          <div className="flex items-center gap-5">
+            {user ? (
+              <span className="p-1 hover:shadow-lg rounded-full">
+                <button onClick={logOutFun}>{profileName}</button>
+              </span>
+            ) : (
+              <span className=" ">
+                <Link href="/login">
+                  <button>{iconTwo}</button>
+                </Link>
+              </span>
+            )}
+          </div>
         </div>
       </div>
-    </div>
-    // <div className=" bg-blue-50  px-7  shadow-md   text-black p-3 rounded-b-lg">
-    //   <div className=" flex items-center justify-between  ">
-    //     <div>
-    //       <h1>{title}</h1>
-    //     </div>
-    //     <div className="flex items-center justify-around gap-8">
-    //       <span className=" p-1 hover:bg-gray-100  rounded-full">
-    //         <h1>{iconOne}</h1>
-    //       </span>
-    //       <span className=" p-1 flex items-center justify-center  hover:bg-gray-100  rounded-full">
-    //         <h1>{iconTwo}</h1>
-    //       </span>
-    //     </div>
-    //   </div>
-    // </div>
+    </>
   );
 }
 
