@@ -1,22 +1,39 @@
 "use client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { auth, onAuthStateChanged, signOut } from "@/config/firebaseConfig";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "../../config/firebase";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../config/firebase";
 
 function Navbar(props: any) {
-  const { title, iconOne, iconTwo, profileImg, profileName } = props;
+  const { title, iconTwo, profileData } = props;
+  const [userData, setUserData] = useState({});
   const [user, setUser] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
-
+  // const [isOpen, setIsOpen] = useState(false);
+  
+  const getDataFromFirestore = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "userFromGoogle"));
+      querySnapshot.forEach((doc:any) => {
+        // doc.data() is never undefined for query doc snapshots
+        setUserData( doc.data());
+      });
+    } catch (error: any) {
+      console.error("Error fetching user data:", error.message);
+    }
+  };
+  
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser: any) => {
       setUser(currentUser);
+       getDataFromFirestore()
     });
     return () => unsubscribe();
   }, []);
 
-  const logOutFun = () => {
-    signOut(auth)
+  const logOutFun = async () => {
+    await signOut(auth)
       .then(() => {
         alert("Logout successful");
       })
@@ -30,7 +47,7 @@ function Navbar(props: any) {
       <div className="fixed z-0 top-0 left-0 w-full   bg-white px-7 text-[#b1b1b1]  p-2">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-medium">{title}</h1>
+            <h1 className="text-xl font-medium">Scrolllink</h1>
           </div>
           <div className="gap-52 w-[50%] flex">
             <span className="p-1 flex w-full items-center gap-2 justify-center   border-2 bg-white rounded-md">
@@ -67,13 +84,71 @@ function Navbar(props: any) {
           </div>
           <div className="flex items-center gap-5">
             {user ? (
-              <span className="p-1 hover:shadow-lg rounded-full">
-                <button onClick={logOutFun}>{profileName}</button>
+              <span className="">
+              <button className="flex items-center " onClick={logOutFun}>Faizan Ansari
+                
+                  <img
+                    src='https://lh3.googleusercontent.com/ogw/AF2bZyhBNWxIGboL0dc6hmmzTlfW0B6Y9JYdmz7GOeitao8v6IA=s32-c-mo'
+                    // alt="User profile"
+                    className="w-8 h-8 rounded-full ml-2" // styling for the image
+                  />
+                </button>
               </span>
             ) : (
               <span className=" ">
                 <Link href="/login">
-                  <button>{iconTwo}</button>
+                  <button>
+                    {
+                      <svg
+                        className="text-3xl"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1em"
+                        height="1em"
+                        viewBox="0 0 24 24"
+                      >
+                        <g
+                          fill="none"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                        >
+                          <path
+                            strokeDasharray="36"
+                            d="M13 4l7 0c0.55 0 1 0.45 1 1v14c0 0.55 -0.45 1 -1 1h-7"
+                          >
+                            <animate
+                              fill="freeze"
+                              attributeName="strokeDasharray"
+                              dur="0.5s"
+                              values="36;0"
+                            />
+                          </path>
+                          <path strokeDasharray="14" d="M3 12h11.5">
+                            <animate
+                              fill="freeze"
+                              attributeName="strokeDasharray"
+                              begin="0.6s"
+                              dur="0.2s"
+                              values="14;0"
+                            />
+                          </path>
+                          <path
+                            strokeDasharray="6"
+                            d="M14.5 12l-3.5 -3.5M14.5 12l-3.5 3.5"
+                          >
+                            <animate
+                              fill="freeze"
+                              attributeName="strokeDasharray"
+                              begin="0.8s"
+                              dur="0.2s"
+                              values="6;0"
+                            />
+                          </path>
+                        </g>
+                      </svg>
+                    }
+                  </button>
                 </Link>
               </span>
             )}

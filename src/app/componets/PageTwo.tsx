@@ -5,18 +5,15 @@ import YouMightLike from "./YouMightLike";
 
 function PageTwo() {
   return (
-    <div className="grid grid-cols-[65%_auto] w-[95%] mx-auto">
-      <div className="grid grid-cols-[27%_auto]">
-        <SideBar /> <Post />
+    <div className="grid grid-cols-5   justify-end  items-start">
+ <div className="">
+  <SideBar/>
+ </div>
+      <div className="col-span-2 ">
+        <Post />
       </div>
-      <div className="grid grid-cols-[55%_Auto] ">
-        <div>
-          <YouMightLike />
-        </div>
-        <div>
-            
-          {/* <YouMightLike /> */}
-        </div>
+      <div className="">
+        <YouMightLike />
       </div>
     </div>
   );

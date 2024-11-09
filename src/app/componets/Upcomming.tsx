@@ -4,7 +4,7 @@ function Upcomming() {
   return (
     <div>
       <div>
-        <div className=" mt-4 bg-white  w-full mx-5 rounded-lg shadow-sm p-6">
+        <div className=" mt-4 bg-white  w-full mx-5 rounded-lg shadow-sm p-4">
           <div className="flex justify-between items-center   mb-4">
             <h1 className="text-sm font-medium text-[#5c5c5c]">
               Upcomming Event
@@ -14,7 +14,7 @@ function Upcomming() {
             </button>
           </div>
 
-          <div className="rounded-lg bg-[#f4f4f4] p-4">
+          <div className="my-2 rounded-lg bg-[#f4f4f4] p-3">
             <div className="flex gap-2">
               <span className="w-10 rounded-full overflow-hidden">
                 <img

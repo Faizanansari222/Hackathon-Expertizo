@@ -28,7 +28,7 @@ function SideBar() {
 
       <aside
         id="default-sidebar"
-        className="hover:text-[#ff4f9b] fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+        className="hover:text-[#ff4f9b] fixed z-0 top-0 left-0  w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
         aria-label="Sidebar"
       >
         <div className="mt-14 h-full px-3 py-4 overflow-y-auto bg-white dark:bg-gray-800">
@@ -38,7 +38,7 @@ function SideBar() {
                 href="#"
                 className="hover:text-[#ff4f9b] flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100  dark:hover:bg-gray-700 group"
               >
-                <svg className="text-3xl flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-[#ff4f9b] dark:group-hover:text-white" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" stroke-width="1.5"><path d="M6.133 21C4.955 21 4 20.02 4 18.81v-8.802c0-.665.295-1.295.8-1.71l5.867-4.818a2.09 2.09 0 0 1 2.666 0l5.866 4.818c.506.415.801 1.045.801 1.71v8.802c0 1.21-.955 2.19-2.133 2.19z"/><path d="M9.5 21v-5.5a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2V21"/></g></svg>
+                <svg className="text-3xl flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-[#ff4f9b] dark:group-hover:text-white" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"><path d="M6.133 21C4.955 21 4 20.02 4 18.81v-8.802c0-.665.295-1.295.8-1.71l5.867-4.818a2.09 2.09 0 0 1 2.666 0l5.866 4.818c.506.415.801 1.045.801 1.71v8.802c0 1.21-.955 2.19-2.133 2.19z"/><path d="M9.5 21v-5.5a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2V21"/></g></svg>
                 <span className="ms-3">Feed</span>
               </a>
             </li>
@@ -67,7 +67,7 @@ function SideBar() {
                 href="#"
                 className="hover:text-[#ff4f9b] flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
-                <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-[#ff4f9b] dark:group-hover:text-white" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="currentColor" fill-rule="evenodd" d="M4 2a.5.5 0 0 0-.447.276l-1.5 3A.5.5 0 0 0 2 5.5v2a.5.5 0 0 0 .5.5H3v5.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V8h.5a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.053-.224l-1.5-3A.5.5 0 0 0 12 2zm9 3.618V7h-2V6h-1v1H8.5V6h-1v1H6V6H5v1H3V5.618L4.309 3h7.382zM6.5 10h1V9h-1zm2 0h1V9h-1zm-1 1.5h-1v-1h1zm1 0h1v-1h-1z" clip-rule="evenodd"/></svg>
+                <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-[#ff4f9b] dark:group-hover:text-white" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="currentColor" fillRule="evenodd" d="M4 2a.5.5 0 0 0-.447.276l-1.5 3A.5.5 0 0 0 2 5.5v2a.5.5 0 0 0 .5.5H3v5.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V8h.5a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.053-.224l-1.5-3A.5.5 0 0 0 12 2zm9 3.618V7h-2V6h-1v1H8.5V6h-1v1H6V6H5v1H3V5.618L4.309 3h7.382zM6.5 10h1V9h-1zm2 0h1V9h-1zm-1 1.5h-1v-1h1zm1 0h1v-1h-1z" clipRule="evenodd"/></svg>
                 <span className="flex-1 ms-3 whitespace-nowrap">Market Place</span>
                 <span className="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
                   3

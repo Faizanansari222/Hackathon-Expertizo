@@ -13,13 +13,21 @@ const SignupForm = () => {
 
   const router = useRouter()
   const handleSubmit = async (e:any) => {
-    e.preventDefault();
-    if (password !== confirmPassword) {
-      alert('Passwords do not match!');
-      return;
+    try{
+
+      e.preventDefault();
+      if (password !== confirmPassword) {
+        alert('Passwords do not match!');
+        return;
+      }
+  await register(email, password)
+  alert('Signup successful!');
+  router.push('/login')
+    }catch (error: any) {
+        console.log("Error Login:", error);
+        alert("Error Login"+ error.message);
+        
     }
-await register(email, password, fullName)
-router.push('/login')
     // try {
     //   const response = await fetch('http://localhost:1337/api/auth/local/register', {
     //     method: 'POST',
