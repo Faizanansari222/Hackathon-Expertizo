@@ -1,12 +1,88 @@
 "use client";
-import React, { useState } from "react";
-import ProductModal from "./Modal";
+import React, { useEffect, useState } from "react";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { app, db } from "../../config/firebase";
+import { collection, addDoc, getDocs  } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
 
 function Post() {
-  const [isOpen, setIsOpen ]= useState(false);
+  const [fileName, setFileName] = useState("");
+  const [filePreview, setFilePreview] = useState<any>(null);
+  const [postTitle, setPostTitle] = useState<any>("");
+  const [file, setFile] = useState<any>(null);
+  const [getPost,setGetPost] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "post"));
+        const posts = querySnapshot.docs.map((doc) => doc.data());
+        setGetPost(posts);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    };
+    fetchPosts();
+  }, []);
+
+  const handlePostBtn = async () => {
+    const db = getFirestore(app);
+  
+    try {
+      const storage = getStorage(); // Initialize Firebase storage
+      const storageRef = ref(storage, "images/" + file.name); // Create a reference to the file in storage
+  
+      // Upload the file
+      const snapshot = await uploadBytes(storageRef, file);
+      console.log("Uploaded a blob or file!", snapshot);
+  
+      // Get the download URL
+      const url = await getDownloadURL(storageRef);
+      console.log("Download URL:", url);
+  
+      // Save document to Firestore
+      const docRef = await addDoc(collection(db, "post"), {
+        ...(postTitle && { title: postTitle }), // Add title only if postTitle is set
+        imgUrl: url,
+      });
+  
+      console.log("Document written with ID: ", docRef.id);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  
+    // Fetching posts from Firestore
+    try {
+      const querySnapshot = await getDocs(collection(db, "post"));
+      const posts = querySnapshot.docs.map((doc) => doc.data()); // Collect all posts in an array
+      setGetPost(posts); // Update state with the array of posts
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+  
+
+  const handleFileChange = async (event: any) => {
+    const file = event.target.files[0];
+    setFile(file);
+
+    if (file) {
+      await setFileName(file.name);
+
+      // Create a file reader to read the file and display the image
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFilePreview(reader.result); // Set the image preview URL
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setFileName("No file chosen");
+      setFilePreview(null);
+    }
+  };
   return (
     <>
-    <ProductModal show={isOpen} onClose={() => setIsOpen(false)}/>
+      {/* <ProductModal /> */}
       <div className="w-full">
         <div className="mt-20 flex-col">
           <div className="rounded-lg shadow-sm bg-white gap-4 p-5 ">
@@ -18,15 +94,36 @@ function Post() {
                   alt=""
                 />
               </span>
-              <div className="bg-[#fbfafa] shadow-sm p-2 px-2 w-full rounded-md">
-                <input
+              <div className="bg-[#fbfafa] shadow-sm p-2 flex items-center px-2 w-full rounded-md">
+                <textarea
+                  placeholder="What's happening?"
+                  cols={1}
+                  rows={1}
+                  className="w-full bg-[#fbfafa] outline-none text-[#5c5c5c]"
+                  onChange={(e: any) => setPostTitle(e.target.value)}
+                  name=""
+                  id=""
+                ></textarea>
+                {/* <input
                   className="bg-[#fbfafa] outline-none text-[#5c5c5c] w-full"
                   type="text"
                   placeholder="What's happening?"
-                />
+                /> */}
               </div>
             </div>
-            <div className="mt-5 flex items-center justify-between gap-2 text-[#5c5c5c]">
+            <div className="flex items-center justify-center p-5">
+              {filePreview && (
+                <div className="mt-4">
+                  <img
+                    src={filePreview}
+                    alt="Preview"
+                    className="max-w-xs rounded-md shadow-lg"
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className=" flex items-center justify-between text-[#5c5c5c]">
               <button className="flex items-center gap-1 text-base">
                 <svg
                   className="text-2xl text-[#858585]"
@@ -46,32 +143,49 @@ function Post() {
                 </svg>
                 Live video
               </button>
-              <button className="flex items-center gap-1 text-base">
-                <svg
-                  className="text-2xl text-[#858585]"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="1em"
-                  height="1em"
-                  viewBox="0 0 24 24"
-                >
-                  <g fill="none">
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1.5"
-                      d="M20.33 17.657c.11-.366.17-.755.17-1.157v-9a4 4 0 0 0-4-4h-9a4 4 0 0 0-4 4v9.07m16.83 1.087l-.088-.104l-2.466-2.976a2 2 0 0 0-3.073-.008l-1.312 1.566l-.214.261m7.153 1.26a4 4 0 0 1-3.713 2.842m0 0l-.117.002h-9a4 4 0 0 1-4-3.93m13.117 3.928l-.093-.106l-3.347-3.996m-9.676.175l.177-.201l3.206-3.827a2 2 0 0 1 3.066 0l3.227 3.853"
+              {/* <button
+              >
+                
+              </button> */}
+
+              <div className="flex ">
+                <button>
+                  <div className="flex items-center  gap-1">
+                    <svg
+                      className="text-2xl text-[#858585]"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="1em"
+                      height="1em"
+                      viewBox="0 0 24 24"
+                    >
+                      <g fill="none">
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="1.5"
+                          d="M20.33 17.657c.11-.366.17-.755.17-1.157v-9a4 4 0 0 0-4-4h-9a4 4 0 0 0-4 4v9.07m16.83 1.087l-.088-.104l-2.466-2.976a2 2 0 0 0-3.073-.008l-1.312 1.566l-.214.261m7.153 1.26a4 4 0 0 1-3.713 2.842m0 0l-.117.002h-9a4 4 0 0 1-4-3.93m13.117 3.928l-.093-.106l-3.347-3.996m-9.676.175l.177-.201l3.206-3.827a2 2 0 0 1 3.066 0l3.227 3.853"
+                        />
+                        <circle
+                          cx="15.091"
+                          cy="8.909"
+                          r="1.5"
+                          fill="currentColor"
+                        />
+                      </g>
+                    </svg>
+                    <label htmlFor="file-upload" className="cursor-pointer ">
+                      Photo
+                    </label>
+                    <input
+                      id="file-upload"
+                      type="file"
+                      onChange={handleFileChange}
+                      className="hidden"
                     />
-                    <circle
-                      cx="15.091"
-                      cy="8.909"
-                      r="1.5"
-                      fill="currentColor"
-                    />
-                  </g>
-                </svg>
-                Photos
-              </button>
+                  </div>
+                </button>
+              </div>
               <button className="flex items-center gap-1 text-base">
                 <svg
                   className="text-2xl text-[#858585]"
@@ -87,9 +201,7 @@ function Post() {
                 </svg>
                 Feeling
               </button>
-              <button onClick={() => setIsOpen(true)} className="flex items-center text-base bg-[#ff4f9b] text-white px-7 p-1 rounded-md">
-                Post
-              </button>
+              <button className="flex items-center gap-1 text-base bg-[#ff4f9b] text-white px-4 py-1 rounded" onClick={handlePostBtn}>Post</button>
             </div>
           </div>
 
@@ -102,68 +214,84 @@ function Post() {
           />
         )} */}
         </div>
-        <div className="w-full bg-gray-100 mt-5">
-          <div className="">
+
+        {/* sdaskjdas */}
+       
+        {/* /asdasdasdad */}
+        <div className="w-full  mt-5">
+  {getPost && getPost.length > 0 ? (
+    getPost.map((post: any, index: any) => (
+      <div key={index} className="w-full  mt-5">
+        <div className="bg-white rounded-md shadow-sm">
+          <img
+            className="rounded-t-xl w-full cursor-pointer"
+            src={post.imgUrl} // Use imgUrl from Firestore data
+            alt="Post image"
             
-            <img
-              className="rounded-t-xl w-full cursor-pointer"
-              src="https://images.unsplash.com/photo-1525268771113-32d9e9021a97?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-              alt=""
-            />
-            <div className="flex p-4 justify-between">
-              <div className="flex items-center space-x-2">
-                <img
-                  className="w-10 rounded-full"
-                  src="https://d2qp0siotla746.cloudfront.net/img/use-cases/profile-picture/template_3.jpg"
-                  alt="sara"
-                />
-                <h2 className="text-gray-800 font-bold cursor-pointer">
-                  Felipe Sacudon
+          />
+          <div className="px-4 p-2 text-[#5c5c5c]">
+            <p className="">{post.title}</p>
+          </div>
+          <div className="flex p-4 justify-between">
+            <div className="flex items-center space-x-2">
+              <img
+                className="w-10 rounded-full"
+                src="https://lh3.googleusercontent.com/ogw/AF2bZyhBNWxIGboL0dc6hmmzTlfW0B6Y9JYdmz7GOeitao8v6IA=s32-c-mo"
+                alt="user avatar"
+              />
+              <h2 className="text-gray-800 font-bold cursor-pointer">
+                {post.title} {/* Display post title */}
                 <p className="text-sm font-light text-[#5c5c5c]">Just now</p>
-                </h2>
-                
+              </h2>
+            </div>
+            <div className="flex space-x-2">
+              <div className="flex space-x-1 items-center">
+                <span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-7 w-7 text-gray-600 cursor-pointer"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                    />
+                  </svg>
+                </span>
+                <span>22</span>
               </div>
-              <div className="flex space-x-2">
-                <div className="flex space-x-1 items-center">
-                  <span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-7 w-7 text-gray-600 cursor-pointer"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                      />
-                    </svg>
-                  </span>
-                  <span>22</span>
-                </div>
-                <div className="flex space-x-1 items-center">
-                  <span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-7 w-7 text-red-500 hover:text-red-400 transition duration-100 cursor-pointer"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </span>
-                  <span>20</span>
-                </div>
+              <div className="flex space-x-2 justify-between items-center">
+                <span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-7 w-7 text-red-500 hover:text-red-400 transition duration-100 cursor-pointer"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </span>
+                <span>20</span>
+                <span><svg className="text-2xl text-[#858585]" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 20 20"><path fill="currentColor" d="M9 15.25a1.25 1.25 0 1 1 2.5 0a1.25 1.25 0 0 1-2.5 0m0-5a1.25 1.25 0 1 1 2.5 0a1.25 1.25 0 0 1-2.5 0m0-5a1.249 1.249 0 1 1 2.5 0a1.25 1.25 0 1 1-2.5 0"/></svg></span>
               </div>
             </div>
           </div>
         </div>
+      </div>
+    ))
+  ) : (
+    <p className="text-center text-gray-500">No posts available</p>
+  )}
+</div>
+
       </div>
     </>
   );

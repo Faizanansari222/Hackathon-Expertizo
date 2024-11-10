@@ -46,3 +46,5 @@ export const login = async (email: string, password: string) => {
     alert("Error Login");
   }
 };
+
+export { app };
