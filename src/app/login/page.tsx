@@ -9,7 +9,6 @@ import { signInWithPopup } from "firebase/auth";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 import { db } from "../../config/firebase";
-import ProductModal from "../componets/Modal";
 
 const SignupForm = () => {
   const [email, setEmail] = useState("");
@@ -53,14 +52,12 @@ const SignupForm = () => {
   const handleSubmit = async (e: any) => {
     try {
       e.preventDefault();
-      await login(email, password);
-      alert("Login successful!");
-      router.push("/");
-    } catch (error: any) {
-      console.error("Error Login:", error);
-      alert("Error Login");
+    if(!email || !password) return alert("Please fill in all the fields");
+    await login(email, password, router);
+    
+    }catch (error: any) {
+        console.log("Error Login:", error);
     }
-
     // try {
     //   const response = await fetch(
     //     "http://localhost:1337/api/auth/local/register",

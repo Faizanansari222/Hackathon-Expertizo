@@ -8,6 +8,7 @@ function PageTwo() {
     <div className="grid grid-cols-5   justify-end  items-start">
  <div className="">
   <SideBar/>
+  
  </div>
       <div className="col-span-2 ">
         <Post />

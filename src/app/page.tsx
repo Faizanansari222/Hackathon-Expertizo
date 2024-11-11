@@ -1,14 +1,11 @@
 "use client";
-import Image from "next/image";
-import Link from "next/link";
 import Navbar from "./componets/Navbar";
 import PageTwo from "./componets/PageTwo";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/config/firebase";
+import { auth, db } from "@/config/firebase";
 import { useEffect, useState } from "react";
-import SideBar from "./componets/SideBar";
-import ProductModal from "./componets/Modal";
-
+import { onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/navigation";
 type User = {
   name: string;
   email: string;
@@ -17,8 +14,15 @@ type User = {
 
 export default function Home() {
   const [userData, setUserData] = useState<User | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
+    onAuthStateChanged(auth, (user: any) => {
+      setIsLoggedIn(user);
+    });
+
     getUser();
   }, []);
 
@@ -37,12 +41,10 @@ export default function Home() {
 
   return (
     <div className="bg-[#fbfafa]">
-      
       <Navbar profileData={userData} />
       <div className="grid grid-cols-1 justify-center items-center gap-2">
         <PageTwo />
       </div>
-      
     </div>
   );
 }
