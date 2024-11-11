@@ -123,7 +123,7 @@ function Post() {
               )}
             </div>
 
-            <div className=" flex items-center justify-between text-[#5c5c5c]">
+            <div className=" flex items-center justify-between w-auto text-[#5c5c5c]">
               <button className="flex items-center gap-1 text-base">
                 <svg
                   className="text-2xl text-[#858585]"
@@ -222,13 +222,19 @@ function Post() {
   {getPost && getPost.length > 0 ? (
     getPost.map((post: any, index: any) => (
       <div key={index} className="w-full  mt-5">
+
         <div className="bg-white rounded-md shadow-sm">
+          <div className="relative cursor-pointer">
+          <div className="absolute  opacity-0 group-hover:opacity-100 inset-0">
+            <h1 className="absolute  text-white left-auto   transition-opacity mr-3 top-3 inset-0">X</h1>
+          </div>
           <img
-            className="rounded-t-xl w-full cursor-pointer"
+            className=" object-cover rounded-t-xl w-full cursor-pointer"
             src={post.imgUrl} // Use imgUrl from Firestore data
             alt="Post image"
             
           />
+          </div>
           <div className="px-4 p-2 text-[#5c5c5c]">
             <p className="">{post.title}</p>
           </div>

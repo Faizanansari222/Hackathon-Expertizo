@@ -4,7 +4,7 @@ import Upcomming from "./Upcomming";
 function YouMightLike() {
   return (
     <>
-      <div className="col-span-2 w-[100%]">
+      <div className="fixed  col-span-2 w-[22%]">
         <div className=" mt-20 bg-white w-full   mx-5 rounded-lg shadow-sm p-6">
           <div className="flex justify-between items-center   mb-2">
             <h1 className="text-sm font-medium text-[#5c5c5c]">
@@ -29,7 +29,7 @@ function YouMightLike() {
               <p className="text-[#5c5c5c] font-medium text-xs">15 Mutuals</p>
             </div>
           </div>
-          <div className="flex items-center mt-4 justify-around">
+          <div className="flex items-center mt-4 justify-around gap-3">
             <button className="bg-[#ff4f9b] text-white px-4 py-1 rounded-md text-sm p-1">
               Follow
             </button>

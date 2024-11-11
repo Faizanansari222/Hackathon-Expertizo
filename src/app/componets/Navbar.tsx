@@ -5,13 +5,14 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../../config/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebase";
+import { useRouter } from "next/navigation";
 
 function Navbar(props: any) {
   const { title, iconTwo, profileData } = props;
   const [userData, setUserData] = useState({});
   const [user, setUser] = useState(null);
   // const [isOpen, setIsOpen] = useState(false);
-  
+  const router = useRouter();
   const getDataFromFirestore = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "userFromGoogle"));
@@ -44,7 +45,7 @@ function Navbar(props: any) {
 
   return (
     <>
-      <div className="fixed z-0 top-0 left-0 w-full   bg-white px-7 text-[#b1b1b1]  p-2">
+      <div className="fixed z-10 top-0 left-0 w-full   bg-white px-7 text-[#b1b1b1]  p-2">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-medium">Scrolllink</h1>
@@ -85,12 +86,14 @@ function Navbar(props: any) {
           <div className="flex items-center gap-5">
             {user ? (
               <span className="">
-              <button className="flex items-center " onClick={logOutFun}>Faizan Ansari
+              <button  className="flex items-center text-[#696969] font-semibold " onClick={()=>{
+                router.push("/login")
+                logOutFun()}}>Faizan Ansari
                 
                   <img
                     src='https://lh3.googleusercontent.com/ogw/AF2bZyhBNWxIGboL0dc6hmmzTlfW0B6Y9JYdmz7GOeitao8v6IA=s32-c-mo'
                     // alt="User profile"
-                    className="w-8 h-8 rounded-full ml-2" // styling for the image
+                    className="w-10 h-10 rounded-full ml-2" // styling for the image
                   />
                 </button>
               </span>
