@@ -3,32 +3,40 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../../config/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDocs, onSnapshot } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { useRouter } from "next/navigation";
 
 function Navbar(props: any) {
-  const { title, iconTwo, profileData } = props;
-  const [userData, setUserData] = useState({});
-  const [user, setUser] = useState(null);
+  const { profileData } = props;
+  const [userData, setUserData] = useState([]);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
   // const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  useEffect(() => {
+    getDataFromFirestore();
+  }, []);
   const getDataFromFirestore = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "userFromGoogle"));
-      querySnapshot.forEach((doc:any) => {
-        // doc.data() is never undefined for query doc snapshots
-        setUserData( doc.data());
+      
+      const users: any = []; // Temporary array to hold all documents' data
+      querySnapshot.forEach((doc) => {
+        users.push(doc.data());
       });
+      
+      // Update userData state with the entire array of users
+      setUserData(users);
     } catch (error: any) {
       console.error("Error fetching user data:", error.message);
     }
   };
-  
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser: any) => {
-      setUser(currentUser);
-       getDataFromFirestore()
+    const unsubscribe = onAuthStateChanged(auth, (user: any) => {
+      setCurrentUser(user);
+      getDataFromFirestore();
     });
     return () => unsubscribe();
   }, []);
@@ -84,14 +92,18 @@ function Navbar(props: any) {
             <div className=""></div>
           </div>
           <div className="flex items-center gap-5">
-            {user ? (
+            {currentUser ? (
               <span className="">
-              <button  className="flex items-center text-[#696969] font-semibold " onClick={()=>{
-                router.push("/login")
-                logOutFun()}}>Faizan Ansari
-                
+                <button
+                  className="flex items-center text-[#696969] font-semibold "
+                  onClick={() => {
+                    router.push("/login");
+                    logOutFun();
+                  }}
+                >
+                  Faizan Ansari
                   <img
-                    src='https://lh3.googleusercontent.com/ogw/AF2bZyhBNWxIGboL0dc6hmmzTlfW0B6Y9JYdmz7GOeitao8v6IA=s32-c-mo'
+                    src="https://lh3.googleusercontent.com/ogw/AF2bZyhBNWxIGboL0dc6hmmzTlfW0B6Y9JYdmz7GOeitao8v6IA=s32-c-mo"
                     // alt="User profile"
                     className="w-10 h-10 rounded-full ml-2" // styling for the image
                   />

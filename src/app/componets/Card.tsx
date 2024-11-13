@@ -6,6 +6,7 @@ import { collection, addDoc, getDocs  } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
 
 function Post() {
+  // const notify = () => toast('Here is your toast.');
   const [fileName, setFileName] = useState("");
   const [filePreview, setFilePreview] = useState<any>(null);
   const [postTitle, setPostTitle] = useState<any>("");
@@ -47,6 +48,8 @@ function Post() {
       });
   
       console.log("Document written with ID: ", docRef.id);
+      setPostTitle("")
+      setFilePreview(null)
     } catch (error) {
       console.error("Error uploading file:", error);
     }

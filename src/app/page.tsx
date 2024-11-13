@@ -23,21 +23,9 @@ export default function Home() {
       setIsLoggedIn(user);
     });
 
-    getUser();
   }, []);
 
-  const getUser = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, "users"));
-      const users: User[] = [];
-      querySnapshot.forEach((doc) => {
-        users.push(doc.data() as User);
-      });
-      await setUserData(users[0]); // Set first user or adapt as needed
-    } catch (error: any) {
-      console.error("Error fetching user data:", error.message);
-    }
-  };
+  
 
   return (
     <div className="bg-[#fbfafa]">

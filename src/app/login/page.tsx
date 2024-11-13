@@ -16,16 +16,15 @@ const SignupForm = () => {
 
   const storage = getStorage();
   const router = useRouter();
-  const [image, setImage] = useState("");
+  const [profileImage, setProfileImage] = useState("");
 
-  const sendFileToStorage = async (image: any) => {
-    const storageRef = ref(storage, "images/" + image);
+  const sendFileToStorage = async (image:any) => {
+    const storageRef = ref(storage, "profileImages/" + image);
 
     await uploadBytes(storageRef, image);
 
-    setImage(await getDownloadURL(storageRef));
+    setProfileImage(await getDownloadURL(storageRef));
     console.log(getDownloadURL(storageRef));
-    
   };
   const loginWithGoogle = async () => {
     try {
@@ -37,13 +36,13 @@ const SignupForm = () => {
         uid: user.uid,
         displayName: user.displayName,
         email: user.email,
-        photoURL: image,
+        photoURL: profileImage,
       });
-      sendFileToStorage(image);
       console.log("Document written with ID: ", docRef.id);
 
       // Redirect user after successful login
       router.push("/");
+      sendFileToStorage(profileImage);
     } catch (error: any) {
       console.error("Error during Google login:", error.message);
     }
@@ -52,11 +51,10 @@ const SignupForm = () => {
   const handleSubmit = async (e: any) => {
     try {
       e.preventDefault();
-    if(!email || !password) return alert("Please fill in all the fields");
-    await login(email, password, router);
-    
-    }catch (error: any) {
-        console.log("Error Login:", error);
+      if (!email || !password) return alert("Please fill in all the fields");
+      await login(email, password, router);
+    } catch (error: any) {
+      console.log("Error Login:", error);
     }
     // try {
     //   const response = await fetch(
