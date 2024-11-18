@@ -7,7 +7,7 @@ import { getFirestore } from "firebase/firestore";
 
 function Post() {
   // const notify = () => toast('Here is your toast.');
-  const [fileName, setFileName] = useState("");
+  // const [fileName, setFileName] = useState("");
   const [filePreview, setFilePreview] = useState<any>(null);
   const [postTitle, setPostTitle] = useState<any>("");
   const [file, setFile] = useState<any>(null);
@@ -48,7 +48,7 @@ function Post() {
       });
   
       console.log("Document written with ID: ", docRef.id);
-      setPostTitle("")
+      setPostTitle('');
       setFilePreview(null)
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -70,7 +70,7 @@ function Post() {
     setFile(file);
 
     if (file) {
-      await setFileName(file.name);
+      // await setFileName(file.name);
 
       // Create a file reader to read the file and display the image
       const reader = new FileReader();
@@ -79,14 +79,14 @@ function Post() {
       };
       reader.readAsDataURL(file);
     } else {
-      setFileName("No file chosen");
+      // setFileName("No file chosen");
       setFilePreview(null);
     }
   };
   return (
     <>
       {/* <ProductModal /> */}
-      <div className="w-full">
+      <div className="w-full h-screen">
         <div className="mt-20 flex-col">
           <div className="rounded-lg shadow-sm bg-white gap-4 p-5 ">
             <div className="flex items-center gap-3">
