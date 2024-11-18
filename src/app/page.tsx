@@ -1,8 +1,7 @@
 "use client";
 import Navbar from "./componets/Navbar";
 import PageTwo from "./componets/PageTwo";
-import { collection, getDocs } from "firebase/firestore";
-import { auth, db } from "@/config/firebase";
+import { auth} from "@/config/firebase";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";

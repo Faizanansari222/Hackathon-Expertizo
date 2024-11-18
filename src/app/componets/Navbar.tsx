@@ -3,13 +3,13 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../../config/firebase";
-import { collection, doc, getDocs, onSnapshot } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { useRouter } from "next/navigation";
 
 function Navbar(props: any) {
   const { profileData } = props;
-  const [userData, setUserData] = useState([]);
+  const [userData, setUserData] = useState<any>([]);
   const [currentUser, setCurrentUser] = useState<any>(null);
 
   // const [isOpen, setIsOpen] = useState(false);
@@ -21,7 +21,7 @@ function Navbar(props: any) {
     try {
       const querySnapshot = await getDocs(collection(db, "userFromGoogle"));
       
-      const users: any = []; // Temporary array to hold all documents' data
+      const users:any = []; // Temporary array to hold all documents' data
       querySnapshot.forEach((doc) => {
         users.push(doc.data());
       });
